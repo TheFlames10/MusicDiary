@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Songs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .search-results {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .song-item {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .song-item.selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .add-song-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .add-song-button.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .add-song-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Songs</h1>
+    <button class="add-song-button" id="addSongButton">Add Song</button>
+    <div class="search-container">
+        <input type="text" class="search-bar" id="searchBar" placeholder="Search for songs...">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</body>
+</html>
+<script>
+    const searchBar = document.getElementById('searchBar');
+    const searchResults = document.getElementById('searchResults');
+    const addSongButton = document.getElementById('addSongButton');
+    let selectedSong = null;
+
+    searchBar.addEventListener('input', () => {
+        const query = searchBar.value.toLowerCase();
+        searchResults.innerHTML = '';
+
+        // Dummy data for demonstration
+        const songs = [
+            'Song A',
+            'Song B',
+            'Song C',
+            'Song D'
+        ];
+
+        const filteredSongs = songs.filter(song => song.toLowerCase().includes(query));
+
+        filteredSongs.forEach(song => {
+            const songItem = document.createElement('div');
+            songItem.className = 'song-item';
+            songItem.textContent = song;
+            songItem.addEventListener('click', () => {
+                document.querySelectorAll('.song-item').forEach(item => item.classList.remove('selected'));
+                songItem.classList.add('selected');
+                selectedSong = song;
+                addSongButton.classList.add('active');
+            });
+            searchResults.appendChild(songItem);
+        });
+    });
+
+    addSongButton.addEventListener('click', () => {
+        if (selectedSong) {
+            // Redirect or perform the action with the selected song
+            console.log(`Selected song: ${selectedSong}`);
+            window.location.href = '/home';
+        }
+    });
+</script>
