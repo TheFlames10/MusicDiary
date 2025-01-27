@@ -40,6 +40,14 @@
             justify-content: center;
             align-items: center;
             aspect-ratio: 1 / 1;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            color: #000;
+        }
+        .day.selected {
+            background-color: rgba(0, 123, 255, 0.7);
+            color: #fff;
         }
         .day img {
             max-width: 100%;
@@ -88,7 +96,7 @@
         <button id="nextMonth">Next</button>
     </div>
     <div class="calendar"></div>
-    <button class="add-song-button" onclick="window.location.href='/song/add'">Add Song</button>
+    <button class="add-song-button" id="addSongButton">Add Song</button>
 </body>
 </html>
 <script>
@@ -96,6 +104,8 @@
     const monthYear = document.getElementById('monthYear');
     const prevMonth = document.getElementById('prevMonth');
     const nextMonth = document.getElementById('nextMonth');
+    const addSongButton = document.getElementById('addSongButton');
+    let selectedDate = null;
 
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
@@ -105,13 +115,25 @@
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         monthYear.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
 
+        const songs = JSON.parse(localStorage.getItem('songs')) || {};
+
         for (let day = 1; day <= daysInMonth; day++) {
             const dayBlock = document.createElement('div');
             dayBlock.className = 'day';
             dayBlock.innerHTML = `
-                <img src="path/to/your/image.jpg" alt="Image description">
                 <p>Day ${day}</p>
             `;
+            const dateKey = `${year}-${month + 1}-${day}`;
+            if (songs[dateKey]) {
+                dayBlock.style.backgroundImage = `url(${songs[dateKey].albumCover})`;
+                dayBlock.innerHTML += `<p>${songs[dateKey].title}</p>`;
+            }
+            dayBlock.addEventListener('click', () => {
+                document.querySelectorAll('.day').forEach(item => item.classList.remove('selected'));
+                dayBlock.classList.add('selected');
+                selectedDate = new Date(year, month, day);
+                console.log(`Selected date: ${selectedDate}`);
+            });
             calendar.appendChild(dayBlock);
         }
     }
@@ -134,5 +156,28 @@
         updateCalendar(currentMonth, currentYear);
     });
 
+    addSongButton.addEventListener('click', () => {
+        if (selectedDate) {
+            localStorage.setItem('selectedDate', selectedDate.toISOString());
+            window.location.href = '/song/add';
+        } else {
+            alert('Please select a date first.');
+        }
+    });
+
     updateCalendar(currentMonth, currentYear);
+
+    // Check if a song was selected and update the calendar
+    const selectedSong = localStorage.getItem('selectedSong');
+    const selectedDateStr = localStorage.getItem('selectedDate');
+    if (selectedSong && selectedDateStr) {
+        const selectedDate = new Date(selectedDateStr);
+        const songs = JSON.parse(localStorage.getItem('songs')) || {};
+        const dateKey = `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`;
+        songs[dateKey] = JSON.parse(selectedSong);
+        localStorage.setItem('songs', JSON.stringify(songs));
+        updateCalendar(currentMonth, currentYear);
+        localStorage.removeItem('selectedSong');
+        localStorage.removeItem('selectedDate');
+    }
 </script>

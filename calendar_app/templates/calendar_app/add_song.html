@@ -94,34 +94,32 @@
         const query = searchBar.value.toLowerCase();
         searchResults.innerHTML = '';
 
-        // Dummy data for demonstration
-        const songs = [
-            'Song A',
-            'Song B',
-            'Song C',
-            'Song D'
-        ];
-
-        const filteredSongs = songs.filter(song => song.toLowerCase().includes(query));
-
-        filteredSongs.forEach(song => {
-            const songItem = document.createElement('div');
-            songItem.className = 'song-item';
-            songItem.textContent = song;
-            songItem.addEventListener('click', () => {
-                document.querySelectorAll('.song-item').forEach(item => item.classList.remove('selected'));
-                songItem.classList.add('selected');
-                selectedSong = song;
-                addSongButton.classList.add('active');
-            });
-            searchResults.appendChild(songItem);
-        });
+        if (query) {
+            fetch(`/song/search/?q=${query}`)
+                .then(response => response.json())
+                .then(songs => {
+                    songs.forEach(song => {
+                        const songItem = document.createElement('div');
+                        songItem.className = 'song-item';
+                        songItem.textContent = `${song.name} - ${song.artist}`;
+                        songItem.addEventListener('click', () => {
+                            document.querySelectorAll('.song-item').forEach(item => item.classList.remove('selected'));
+                            songItem.classList.add('selected');
+                            selectedSong = {
+                                title: song.name,
+                                albumCover: song.albumCover
+                            };
+                            addSongButton.classList.add('active');
+                        });
+                        searchResults.appendChild(songItem);
+                    });
+                });
+        }
     });
 
     addSongButton.addEventListener('click', () => {
         if (selectedSong) {
-            // Redirect or perform the action with the selected song
-            console.log(`Selected song: ${selectedSong}`);
+            localStorage.setItem('selectedSong', JSON.stringify(selectedSong));
             window.location.href = '/home';
         }
     });

@@ -1,3 +1,6 @@
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+from django.http import JsonResponse
 import requests
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
@@ -5,6 +8,14 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import User
+from dotenv import load_dotenv
+import os
+
+# Add your Spotify API credentials
+spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
+    client_id=settings.SPOTIFY_CLIENT_ID,
+    client_secret=settings.SPOTIFY_CLIENT_SECRET
+))
 
 def login_page(request):
     """
@@ -81,3 +92,17 @@ def add_song(request):
     Requires user to be logged in.
     """
     return render(request, 'calendar_app/add_song.html')
+
+@login_required
+def search_songs(request):
+    """
+    Search for songs using the Spotify API.
+    Requires user to be logged in.
+    """
+    query = request.GET.get('q')
+    if query:
+        results = spotify.search(q=query, type='track', limit=10)
+        tracks = results['tracks']['items']
+        songs = [{'name': track['name'], 'artist': track['artists'][0]['name'], 'albumCover': track['album']['images'][0]['url']} for track in tracks]
+        return JsonResponse(songs, safe=False)
+    return JsonResponse([], safe=False)
