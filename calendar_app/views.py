@@ -3,13 +3,12 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from django.http import JsonResponse
 import requests
 from datetime import datetime, timedelta
+import random
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import User
-from dotenv import load_dotenv
-import os
 
 # Add your Spotify API credentials
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
@@ -106,3 +105,59 @@ def search_songs(request):
         songs = [{'name': track['name'], 'artist': track['artists'][0]['name'], 'albumCover': track['album']['images'][0]['url']} for track in tracks]
         return JsonResponse(songs, safe=False)
     return JsonResponse([], safe=False)
+
+@login_required
+def discover(request):
+    """
+    Display the discover page with personalized song recommendations.
+    Requires user to be logged in.
+    """
+    # Get songs from local storage (we'll need to modify this to use a database later)
+    songs = request.session.get('songs', {})
+    
+    # Get user's saved songs and analyze them
+    user_tracks = []
+    genres = {}
+    
+    for date, song in songs.items():
+        # Get full track details from Spotify
+        track_results = spotify.search(q=f"track:{song['title']}", type='track', limit=1)
+        if track_results['tracks']['items']:
+            track = track_results['tracks']['items'][0]
+            user_tracks.append(track['id'])
+            
+            # Get artist genres
+            artist_id = track['artists'][0]['id']
+            artist = spotify.artist(artist_id)
+            for genre in artist['genres']:
+                genres[genre] = genres.get(genre, 0) + 1
+    
+    recommendations = {}
+    
+    # Get recommendations based on user's calendar songs
+    if user_tracks:
+        calendar_recommendations = spotify.recommendations(
+            seed_tracks=user_tracks[:5],
+            limit=15
+        )
+        recommendations['calendar'] = calendar_recommendations['tracks']
+    
+    # Get recommendations based on top genre
+    top_genre = max(genres.items(), key=lambda x: x[1])[0] if genres else None
+    if top_genre:
+        genre_recommendations = spotify.recommendations(
+            seed_genres=[top_genre],
+            limit=15
+        )
+        recommendations['genre'] = genre_recommendations['tracks']
+    
+    # Get random popular tracks
+    random_tracks = spotify.search(
+        q='year:2024',
+        type='track',
+        limit=15,
+        offset=random.randint(0, 100)
+    )
+    recommendations['random'] = random_tracks['tracks']['items']
+    
+    return render(request, 'calendar_app/discover.html', {'recommendations': recommendations})

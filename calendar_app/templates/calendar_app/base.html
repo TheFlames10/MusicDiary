@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Music Diary{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'calendar_app/css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="hero-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <a href="{% url 'home' %}">Music Diary</a>
+            </div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'discover' %}" class="nav-link">Discover</a>
+                <div class="profile-icon">
+                    <img src="{% static 'calendar_app/images/default-profile.png' %}" alt="Profile">
+                </div>
+            </div>
+        </nav>
+        {% block hero %}{% endblock %}
+    </header>
+
+    <main class="content">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

@@ -10,4 +10,5 @@ urlpatterns = [
     path('home', views.home, name='home'),
     path('song/add', views.add_song, name='add_song'),
     path('song/search/', views.search_songs, name='search_songs'),
+    path('discover/', views.discover, name='discover'),
 ]

@@ -67,9 +67,6 @@ DATABASES = {
 
 # Static files configuration
 STATIC_URL = 'static/'  # The URL prefix for static files (like CSS and JavaScript)
-STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Where Django should look for static files in your project
-]
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Where Django will collect all static files for deployment
 
 # User model

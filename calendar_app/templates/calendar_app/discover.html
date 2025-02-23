@@ -1,0 +1,95 @@
+{% extends 'calendar_app/base.html' %}
+
+{% block title %}Discover - Music Diary{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'calendar_app/css/discover.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="discover-container">
+    <div class="tabs">
+        <button class="tab-button active" data-tab="calendar">Based on Your Calendar</button>
+        <button class="tab-button" data-tab="genre">Based on Your Top Genre</button>
+        <button class="tab-button" data-tab="random">Discover Random</button>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="calendar">
+            <div class="song-grid">
+                {% for song in recommendations.calendar %}
+                <div class="song-card">
+                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                    <div class="song-info">
+                        <h3>{{ song.name }}</h3>
+                        <p>{{ song.artists.0.name }}</p>
+                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                            Listen on Spotify
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Similar updates for genre and random sections -->
+        <div class="tab-pane" id="genre">
+            <div class="song-grid">
+                {% for song in recommendations.genre %}
+                <div class="song-card">
+                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                    <div class="song-info">
+                        <h3>{{ song.name }}</h3>
+                        <p>{{ song.artists.0.name }}</p>
+                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                            Listen on Spotify
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane" id="random">
+            <div class="song-grid">
+                {% for song in recommendations.random %}
+                <div class="song-card">
+                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                    <div class="song-info">
+                        <h3>{{ song.name }}</h3>
+                        <p>{{ song.artists.0.name }}</p>
+                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                            Listen on Spotify
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            tabPanes.forEach(pane => {
+                pane.classList.remove('active');
+                if (pane.id === tabId) {
+                    pane.classList.add('active');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

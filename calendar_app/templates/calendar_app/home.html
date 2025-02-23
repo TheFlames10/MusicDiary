@@ -1,105 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar</title>
-    <style>
-        html, body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f4f4f4;
-            position: relative;
-            min-height: 100vh;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            width: 100%;
-            max-width: 800px;
-        }
-        .day {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-            background-color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            aspect-ratio: 1 / 1;
-            cursor: pointer;
-            background-size: cover;
-            background-position: center;
-            color: #000;
-        }
-        .day.selected {
-            background-color: rgba(0, 123, 255, 0.7);
-            color: #fff;
-        }
-        .day img {
-            max-width: 100%;
-            height: auto;
-        }
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 800px;
-        }
-        .navigation button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #monthYear {
-            font-size: 18px;
-            font-weight: bold;
-            align-self: center;
-        }
-        .add-song-button {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .add-song-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <h1>Calendar</h1>
-    <div class="navigation">
-        <button id="prevMonth">Previous</button>
-        <span id="monthYear"></span>
-        <button id="nextMonth">Next</button>
-    </div>
-    <div class="calendar"></div>
-    <button class="add-song-button" id="addSongButton">Add Song</button>
-</body>
-</html>
+{% extends 'calendar_app/base.html' %}
+
+{% block hero %}
+{% endblock %}
+
+{% block content %}
+<div class="navigation">
+    <button id="prevMonth">Previous</button>
+    <span id="monthYear"></span>
+    <button id="nextMonth">Next</button>
+</div>
+<div class="calendar"></div>
+<button class="add-song-button" id="addSongButton">Add Song</button>
+
 <script>
+    // Your existing JavaScript code here
     const calendar = document.querySelector('.calendar');
     const monthYear = document.getElementById('monthYear');
     const prevMonth = document.getElementById('prevMonth');
@@ -181,3 +95,4 @@
         localStorage.removeItem('selectedDate');
     }
 </script>
+{% endblock %}
