@@ -21,8 +21,10 @@
     const addSongButton = document.getElementById('addSongButton');
     let selectedDate = null;
 
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
+    // Get current date in PST
+    const currentDate = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
 
     function updateCalendar(month, year) {
         calendar.innerHTML = '';
@@ -43,10 +45,18 @@
                 dayBlock.innerHTML += `<p>${songs[dateKey].title}</p>`;
             }
             dayBlock.addEventListener('click', () => {
-                document.querySelectorAll('.day').forEach(item => item.classList.remove('selected'));
-                dayBlock.classList.add('selected');
-                selectedDate = new Date(year, month, day);
-                console.log(`Selected date: ${selectedDate}`);
+                if (year === currentYear && month === currentMonth && day === currentDate.getDate()) {
+                    if (dayBlock.classList.contains('selected')) {
+                        dayBlock.classList.remove('selected');
+                        selectedDate = null;
+                        console.log('Date unselected');
+                    } else {
+                        document.querySelectorAll('.day').forEach(item => item.classList.remove('selected'));
+                        dayBlock.classList.add('selected');
+                        selectedDate = new Date(year, month, day);
+                        console.log(`Selected date: ${selectedDate}`);
+                    }
+                }
             });
             calendar.appendChild(dayBlock);
         }
@@ -71,11 +81,11 @@
     });
 
     addSongButton.addEventListener('click', () => {
-        if (selectedDate) {
+        if (selectedDate && selectedDate.toDateString() === currentDate.toDateString()) {
             localStorage.setItem('selectedDate', selectedDate.toISOString());
             window.location.href = '/song/add';
         } else {
-            alert('Please select a date first.');
+            alert('Please select the current date first.');
         }
     });
 
