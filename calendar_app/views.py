@@ -161,3 +161,15 @@ def discover(request):
     recommendations['random'] = random_tracks['tracks']['items']
     
     return render(request, 'calendar_app/discover.html', {'recommendations': recommendations})
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST['username']
+        user.email = request.POST['email']
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.save()
+        return redirect('profile')
+    return render(request, 'calendar_app/profile.html')

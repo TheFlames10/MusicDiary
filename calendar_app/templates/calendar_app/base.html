@@ -18,7 +18,9 @@
                 <a href="{% url 'home' %}" class="nav-link">Home</a>
                 <a href="{% url 'discover' %}" class="nav-link">Discover</a>
                 <div class="profile-icon">
-                    <img src="{% static 'calendar_app/images/default-profile.png' %}" alt="Profile">
+                    <a href="{% url 'profile' %}">
+                        <img src="{% static 'calendar_app/images/default-profile.png' %}" alt="Profile">
+                    </a>
                 </div>
             </div>
         </nav>

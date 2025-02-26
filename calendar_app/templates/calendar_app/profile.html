@@ -1,0 +1,35 @@
+{% extends 'calendar_app/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'calendar_app/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>Profile Page</h1>
+    <form method="post" action="{% url 'profile' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+        </div>
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

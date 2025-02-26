@@ -3,6 +3,12 @@
 {% block hero %}
 {% endblock %}
 
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'calendar_app/css/home.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="navigation">
     <button id="prevMonth">Previous</button>
@@ -10,7 +16,20 @@
     <button id="nextMonth">Next</button>
 </div>
 <div class="calendar"></div>
-<button class="add-song-button" id="addSongButton">Add Song</button>
+
+<button class="music-btn" id="addSongButton">
+    <div class="equalizer">
+        <div class="equalizer-bar"></div>
+        <div class="equalizer-bar"></div>
+        <div class="equalizer-bar"></div>
+    </div>
+    <span>Add Song</span>
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18V5l12-2v13"></path>
+        <circle cx="6" cy="18" r="3"></circle>
+        <circle cx="18" cy="16" r="3"></circle>
+    </svg>
+</button>
 
 <script>
     // Your existing JavaScript code here
@@ -59,6 +78,13 @@
                 }
             });
             calendar.appendChild(dayBlock);
+        }
+        // Update button text based on whether the current date has a song
+        const currentDateKey = `${currentYear}-${currentMonth + 1}-${currentDate.getDate()}`;
+        if (songs[currentDateKey]) {
+            addSongButton.textContent = 'Edit Song';
+        } else {
+            addSongButton.textContent = 'Add Song';
         }
     }
 

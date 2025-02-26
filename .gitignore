@@ -3,6 +3,7 @@
 *.pyo
 *.pyd
 __pycache__/
+.cache
 *.env
 
 # Django
