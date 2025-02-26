@@ -6,46 +6,104 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'calendar_app/css/discover.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 {% endblock %}
 
 {% block content %}
+<div class="discover-hero">
+    <div class="hero-content animate__animated animate__fadeIn">
+        <h1>Discover Your Next Favorite</h1>
+        <p>Personalized music recommendations based on your tastes and listening habits</p>
+    </div>
+</div>
+
 <div class="discover-container">
-    <div class="tabs">
-        <button class="tab-button active" data-tab="calendar">Based on Your Calendar</button>
-        <button class="tab-button" data-tab="genre">Based on Your Top Genre</button>
-        <button class="tab-button" data-tab="random">Discover Random</button>
+    <div class="tabs animate__animated animate__slideInUp">
+        <button class="tab-button active" data-tab="calendar">
+            <span class="tab-icon calendar-icon"></span>
+            Based on Your Calendar
+        </button>
+        <button class="tab-button" data-tab="genre">
+            <span class="tab-icon genre-icon"></span>
+            Based on Your Top Genre
+        </button>
+        <button class="tab-button" data-tab="random">
+            <span class="tab-icon random-icon"></span>
+            Discover Random
+        </button>
+        <button class="tab-button" data-tab="mood">
+            <span class="tab-icon mood-icon"></span>
+            Mood Matcher
+        </button>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active" id="calendar">
+            <div class="recommendation-header">
+                <h2>Calendar-Based Recommendations</h2>
+                <p>Songs that match what you've been listening to recently</p>
+            </div>
             <div class="song-grid">
                 {% for song in recommendations.calendar %}
-                <div class="song-card">
-                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                <div class="song-card animate__animated animate__fadeIn" style="animation-delay: {% widthratio forloop.counter0 10 1 %}s">
+                    <div class="album-cover-container">
+                        <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                        <div class="album-hover-overlay">
+                            <button class="preview-btn" data-preview-url="{{ song.preview_url }}">
+                                <span class="preview-icon"></span>
+                            </button>
+                        </div>
+                    </div>
                     <div class="song-info">
                         <h3>{{ song.name }}</h3>
                         <p>{{ song.artists.0.name }}</p>
-                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
-                            Listen on Spotify
-                        </a>
+                        <div class="song-actions">
+                            <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                                Listen on Spotify
+                            </a>
+                            <button class="add-to-calendar-btn" data-song-id="{{ song.id }}" data-song-name="{{ song.name }}" data-artist="{{ song.artists.0.name }}">
+                                <span class="calendar-add-icon"></span>
+                            </button>
+                            <button class="like-btn" data-song-id="{{ song.id }}">
+                                <span class="heart-icon"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Similar updates for genre and random sections -->
         <div class="tab-pane" id="genre">
+            <div class="recommendation-header">
+                <h2>Genre-Based Recommendations</h2>
+                <p>Songs from your favorite genre: <span class="highlight-genre">{{ user_top_genre }}</span></p>
+            </div>
             <div class="song-grid">
                 {% for song in recommendations.genre %}
                 <div class="song-card">
-                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                    <div class="album-cover-container">
+                        <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                        <div class="album-hover-overlay">
+                            <button class="preview-btn" data-preview-url="{{ song.preview_url }}">
+                                <span class="preview-icon"></span>
+                            </button>
+                        </div>
+                    </div>
                     <div class="song-info">
                         <h3>{{ song.name }}</h3>
                         <p>{{ song.artists.0.name }}</p>
-                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
-                            Listen on Spotify
-                        </a>
+                        <div class="song-actions">
+                            <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                                Listen on Spotify
+                            </a>
+                            <button class="add-to-calendar-btn" data-song-id="{{ song.id }}" data-song-name="{{ song.name }}" data-artist="{{ song.artists.0.name }}">
+                                <span class="calendar-add-icon"></span>
+                            </button>
+                            <button class="like-btn" data-song-id="{{ song.id }}">
+                                <span class="heart-icon"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -53,26 +111,137 @@
         </div>
 
         <div class="tab-pane" id="random">
+            <div class="recommendation-header">
+                <h2>Discover Something New</h2>
+                <p>Broaden your musical horizons with these selections</p>
+            </div>
             <div class="song-grid">
                 {% for song in recommendations.random %}
                 <div class="song-card">
-                    <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                    <div class="album-cover-container">
+                        <img src="{{ song.album.images.0.url }}" alt="{{ song.name }} album cover">
+                        <div class="album-hover-overlay">
+                            <button class="preview-btn" data-preview-url="{{ song.preview_url }}">
+                                <span class="preview-icon"></span>
+                            </button>
+                        </div>
+                    </div>
                     <div class="song-info">
                         <h3>{{ song.name }}</h3>
                         <p>{{ song.artists.0.name }}</p>
-                        <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
-                            Listen on Spotify
-                        </a>
+                        <div class="song-actions">
+                            <a href="{{ song.external_urls.spotify }}" class="listen-spotify-btn" target="_blank">
+                                Listen on Spotify
+                            </a>
+                            <button class="add-to-calendar-btn" data-song-id="{{ song.id }}" data-song-name="{{ song.name }}" data-artist="{{ song.artists.0.name }}">
+                                <span class="calendar-add-icon"></span>
+                            </button>
+                            <button class="like-btn" data-song-id="{{ song.id }}">
+                                <span class="heart-icon"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
+
+        <div class="tab-pane" id="mood">
+            <div class="recommendation-header">
+                <h2>Mood Matcher</h2>
+                <p>Select your current mood to get personalized recommendations</p>
+            </div>
+            <div class="mood-selector">
+                <button class="mood-btn" data-mood="happy">Happy</button>
+                <button class="mood-btn" data-mood="relaxed">Relaxed</button>
+                <button class="mood-btn" data-mood="energetic">Energetic</button>
+                <button class="mood-btn" data-mood="focused">Focused</button>
+                <button class="mood-btn" data-mood="melancholic">Melancholic</button>
+            </div>
+            <div class="mood-results">
+                <div class="song-grid" id="mood-songs-container">
+                    <!-- Songs will be loaded via AJAX when a mood is selected -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<div class="now-playing-bar" id="now-playing-bar">
+    <div class="now-playing-info">
+        <div class="now-playing-image">
+            <img id="now-playing-img" src="" alt="Now playing">
+        </div>
+        <div class="now-playing-details">
+            <h4 id="now-playing-title">Not Playing</h4>
+            <p id="now-playing-artist"></p>
+        </div>
+    </div>
+    <div class="player-controls">
+        <button id="player-prev" class="player-control-btn">
+            <span class="prev-icon"></span>
+        </button>
+        <button id="player-toggle" class="player-control-btn play-btn">
+            <span class="play-icon"></span>
+        </button>
+        <button id="player-next" class="player-control-btn">
+            <span class="next-icon"></span>
+        </button>
+    </div>
+    <div class="player-progress">
+        <span id="current-time">0:00</span>
+        <div class="progress-bar">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <span id="total-time">0:30</span>
+    </div>
+</div>
+
+<div class="audio-player-modal" id="audio-player-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Now Playing</h2>
+            <button class="close-modal-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="album-visual">
+                <div class="vinyl-record">
+                    <div class="vinyl-label" id="modal-album-img"></div>
+                </div>
+            </div>
+            <div class="song-details">
+                <h3 id="modal-song-title"></h3>
+                <p id="modal-artist-name"></p>
+                <p id="modal-album-name"></p>
+            </div>
+            <div class="expanded-controls">
+                <div class="expanded-progress">
+                    <span id="expanded-current-time">0:00</span>
+                    <div class="expanded-progress-bar">
+                        <div class="expanded-progress-bar-fill" id="expanded-progress-bar-fill"></div>
+                    </div>
+                    <span id="expanded-total-time">0:30</span>
+                </div>
+                <div class="expanded-buttons">
+                    <button id="expanded-prev" class="expanded-control-btn">
+                        <span class="prev-icon"></span>
+                    </button>
+                    <button id="expanded-toggle" class="expanded-control-btn expanded-play-btn">
+                        <span class="play-icon"></span>
+                    </button>
+                    <button id="expanded-next" class="expanded-control-btn">
+                        <span class="next-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // Tab switching functionality
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -90,6 +259,294 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+    
+    // Audio preview functionality
+    let audioPlayer = new Audio();
+    let currentSongId = null;
+    let isPlaying = false;
+    
+    // Preview button functionality
+    const previewButtons = document.querySelectorAll('.preview-btn');
+    previewButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const previewUrl = button.dataset.previewUrl;
+            const songCard = button.closest('.song-card');
+            const songTitle = songCard.querySelector('h3').textContent;
+            const artistName = songCard.querySelector('p').textContent;
+            const albumImg = songCard.querySelector('img').src;
+            
+            if (previewUrl) {
+                // If this is a different song than what's currently playing
+                if (audioPlayer.src !== previewUrl) {
+                    audioPlayer.src = previewUrl;
+                    
+                    // Update now playing bar
+                    document.getElementById('now-playing-title').textContent = songTitle;
+                    document.getElementById('now-playing-artist').textContent = artistName;
+                    document.getElementById('now-playing-img').src = albumImg;
+                    
+                    // Also update the modal
+                    document.getElementById('modal-song-title').textContent = songTitle;
+                    document.getElementById('modal-artist-name').textContent = artistName;
+                    document.getElementById('modal-album-name').textContent = songTitle; // Usually would be album name
+                    document.getElementById('modal-album-img').style.backgroundImage = `url(${albumImg})`;
+                    
+                    // Show now playing bar if it's hidden
+                    document.getElementById('now-playing-bar').classList.add('visible');
+                }
+                
+                // Toggle play/pause
+                if (isPlaying && audioPlayer.src === previewUrl) {
+                    audioPlayer.pause();
+                    isPlaying = false;
+                    document.getElementById('player-toggle').querySelector('span').classList.remove('pause-icon');
+                    document.getElementById('player-toggle').querySelector('span').classList.add('play-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.remove('pause-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.add('play-icon');
+                } else {
+                    audioPlayer.play();
+                    isPlaying = true;
+                    document.getElementById('player-toggle').querySelector('span').classList.remove('play-icon');
+                    document.getElementById('player-toggle').querySelector('span').classList.add('pause-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.remove('play-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.add('pause-icon');
+                }
+                
+                // Update progress
+                audioPlayer.addEventListener('timeupdate', updateProgress);
+                audioPlayer.addEventListener('ended', () => {
+                    isPlaying = false;
+                    document.getElementById('player-toggle').querySelector('span').classList.remove('pause-icon');
+                    document.getElementById('player-toggle').querySelector('span').classList.add('play-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.remove('pause-icon');
+                    document.getElementById('expanded-toggle').querySelector('span').classList.add('play-icon');
+                    document.getElementById('progress-bar-fill').style.width = '0%';
+                    document.getElementById('expanded-progress-bar-fill').style.width = '0%';
+                });
+            } else {
+                alert('Preview not available for this track.');
+            }
+        });
+    });
+    
+    // Play/pause button in now playing bar
+    document.getElementById('player-toggle').addEventListener('click', () => {
+        if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            document.getElementById('player-toggle').querySelector('span').classList.remove('pause-icon');
+            document.getElementById('player-toggle').querySelector('span').classList.add('play-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.remove('pause-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.add('play-icon');
+        } else if (audioPlayer.src) {
+            audioPlayer.play();
+            isPlaying = true;
+            document.getElementById('player-toggle').querySelector('span').classList.remove('play-icon');
+            document.getElementById('player-toggle').querySelector('span').classList.add('pause-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.remove('play-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.add('pause-icon');
+        }
+    });
+    
+    // Modal controls
+    document.getElementById('expanded-toggle').addEventListener('click', () => {
+        if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            document.getElementById('player-toggle').querySelector('span').classList.remove('pause-icon');
+            document.getElementById('player-toggle').querySelector('span').classList.add('play-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.remove('pause-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.add('play-icon');
+        } else if (audioPlayer.src) {
+            audioPlayer.play();
+            isPlaying = true;
+            document.getElementById('player-toggle').querySelector('span').classList.remove('play-icon');
+            document.getElementById('player-toggle').querySelector('span').classList.add('pause-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.remove('play-icon');
+            document.getElementById('expanded-toggle').querySelector('span').classList.add('pause-icon');
+        }
+    });
+    
+    // Open modal when clicking on now playing bar
+    document.getElementById('now-playing-bar').addEventListener('click', function(e) {
+        if (!e.target.closest('.player-controls')) {
+            document.getElementById('audio-player-modal').classList.add('open');
+        }
+    });
+    
+    // Close modal
+    document.querySelector('.close-modal-btn').addEventListener('click', () => {
+        document.getElementById('audio-player-modal').classList.remove('open');
+    });
+    
+    // Update progress bars
+    function updateProgress() {
+        const currentTime = audioPlayer.currentTime;
+        const duration = audioPlayer.duration || 30; // Default to 30 seconds if duration is not available
+        const progressPercent = (currentTime / duration) * 100;
+        
+        document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+        document.getElementById('expanded-progress-bar-fill').style.width = `${progressPercent}%`;
+        
+        // Update time displays
+        document.getElementById('current-time').textContent = formatTime(currentTime);
+        document.getElementById('expanded-current-time').textContent = formatTime(currentTime);
+        document.getElementById('total-time').textContent = formatTime(duration);
+        document.getElementById('expanded-total-time').textContent = formatTime(duration);
+    }
+    
+    // Format time to MM:SS
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+    
+    // Like button functionality
+    const likeButtons = document.querySelectorAll('.like-btn');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('liked');
+            const songId = button.dataset.songId;
+            
+            // Here you would typically send an AJAX request to update the user's likes
+            // For now, just toggle the class for visual feedback
+            console.log(`Toggled like for song ID: ${songId}`);
+        });
+    });
+    
+    // Add to calendar functionality
+    const addToCalendarButtons = document.querySelectorAll('.add-to-calendar-btn');
+    addToCalendarButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const songId = button.dataset.songId;
+            const songName = button.dataset.songName;
+            const artist = button.dataset.artist;
+            
+            // Visual feedback
+            button.classList.add('added');
+            setTimeout(() => {
+                button.classList.remove('added');
+            }, 2000);
+            
+            // Here you would typically send an AJAX request to add to calendar
+            console.log(`Added "${songName}" by ${artist} to calendar`);
+        });
+    });
+    
+    // Mood selector functionality
+    const moodButtons = document.querySelectorAll('.mood-btn');
+    moodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const mood = button.dataset.mood;
+            moodButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Here you would typically fetch recommendations based on mood via AJAX
+            // For now, just show a loading indicator
+            const moodContainer = document.getElementById('mood-songs-container');
+            moodContainer.innerHTML = '<div class="loading-indicator">Loading recommendations for your ' + mood + ' mood...</div>';
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                // This would be replaced with actual AJAX results
+                moodContainer.innerHTML = `
+                    <div class="song-card animate__animated animate__fadeIn">
+                        <div class="album-cover-container">
+                            <img src="https://i.scdn.co/image/ab67616d0000b273e8b066f70c206551210d902b" alt="Mood song">
+                            <div class="album-hover-overlay">
+                                <button class="preview-btn" data-preview-url="">
+                                    <span class="preview-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="song-info">
+                            <h3>Perfect for ${mood} mood</h3>
+                            <p>Recommended Artist</p>
+                            <div class="song-actions">
+                                <a href="#" class="listen-spotify-btn" target="_blank">
+                                    Listen on Spotify
+                                </a>
+                                <button class="add-to-calendar-btn" data-song-id="123" data-song-name="Mood Song" data-artist="Mood Artist">
+                                    <span class="calendar-add-icon"></span>
+                                </button>
+                                <button class="like-btn" data-song-id="123">
+                                    <span class="heart-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="song-card animate__animated animate__fadeIn" style="animation-delay: 0.1s">
+                        <div class="album-cover-container">
+                            <img src="https://i.scdn.co/image/ab67616d0000b2735590b4b18a29ffdb6a952f64" alt="Mood song">
+                            <div class="album-hover-overlay">
+                                <button class="preview-btn" data-preview-url="">
+                                    <span class="preview-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="song-info">
+                            <h3>Another ${mood} Pick</h3>
+                            <p>Mood Music Group</p>
+                            <div class="song-actions">
+                                <a href="#" class="listen-spotify-btn" target="_blank">
+                                    Listen on Spotify
+                                </a>
+                                <button class="add-to-calendar-btn" data-song-id="124" data-song-name="Another Mood Song" data-artist="Mood Music Group">
+                                    <span class="calendar-add-icon"></span>
+                                </button>
+                                <button class="like-btn" data-song-id="124">
+                                    <span class="heart-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Re-bind event listeners for the new elements
+                bindEventListeners();
+            }, 1500);
+        });
+    });
+    
+    // Function to bind event listeners to dynamically added elements
+    function bindEventListeners() {
+        // Rebind preview buttons
+        document.querySelectorAll('.preview-btn').forEach(button => {
+            if (!button.hasListener) {
+                button.addEventListener('click', () => {
+                    // Preview functionality code
+                    console.log('Preview button clicked');
+                });
+                button.hasListener = true;
+            }
+        });
+        
+        // Rebind like buttons
+        document.querySelectorAll('.like-btn').forEach(button => {
+            if (!button.hasListener) {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('liked');
+                    console.log('Like button clicked');
+                });
+                button.hasListener = true;
+            }
+        });
+        
+        // Rebind add to calendar buttons
+        document.querySelectorAll('.add-to-calendar-btn').forEach(button => {
+            if (!button.hasListener) {
+                button.addEventListener('click', () => {
+                    button.classList.add('added');
+                    setTimeout(() => {
+                        button.classList.remove('added');
+                    }, 2000);
+                    console.log('Add to calendar button clicked');
+                });
+                button.hasListener = true;
+            }
+        });
+    }
 });
 </script>
 {% endblock %}
